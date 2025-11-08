@@ -12,50 +12,30 @@ const Level68Void = ({ onEscape }) => {
 
   const audioRef = useRef(null);
 
-  // const audioRef2 = useRef(null);
+  const audioRef2 = useRef(null);
 
-  // useEffect(() => {
-  //   // Initialize audio and play looped spooky sound
-  //   audioRef2.current = new Audio("/sounds/error.mp3");
-  //   audioRef2.current.loop = true;
-  //   audioRef2.current.volume = 0.8;
-  //   audioRef2.current.play().catch(() => {
-  //     // Autoplay might be blocked, ignore error
-  //   });
+  useEffect(() => {
+    // Initialize audio and play looped spooky sound
+    audioRef2.current = new Audio("/sounds/error.mp3");
+    audioRef2.current.loop = true;
+    audioRef2.current.volume = 0.8;
+    audioRef2.current.play().catch(() => {
+      // Autoplay might be blocked, ignore error
+    });
 
-  //   return () => {
-  //     // Stop audio on unmount
-  //     if (audioRef2.current) {
-  //       audioRef2.current.pause();
-  //       audioRef2.current = null;
-  //     }
-  //   };
-  // }, []);
-
-  // const audioRef3 = useRef(null);
-
-  // useEffect(() => {
-  //   // Initialize audio and play looped spooky sound
-  //   audioRef3.current = new Audio("/sounds/error.mp3");
-  //   audioRef3.current.loop = true;
-  //   audioRef3.current.volume = 0.8;
-  //   audioRef3.current.play().catch(() => {
-  //     // Autoplay might be blocked, ignore error
-  //   });
-
-  //   return () => {
-  //     // Stop audio on unmount
-  //     if (audioRef3.current) {
-  //       audioRef3.current.pause();
-  //       audioRef3.current = null;
-  //     }
-  //   };
-  // }, []);
+    return () => {
+      // Stop audio on unmount
+      if (audioRef2.current) {
+        audioRef2.current.pause();
+        audioRef2.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     // Initialize audio and play looped spooky sound
     audioRef.current = new Audio("/sounds/cat-laugh.mp3");
-    audioRef.current.loop = true;
+    audioRef.current.loop = false;
     audioRef.current.volume = 0.3;
     audioRef.current.play().catch(() => {
       // Autoplay might be blocked, ignore error
@@ -78,14 +58,6 @@ const Level68Void = ({ onEscape }) => {
           : prev
       );
 
-      // Initialize audio and play looped spooky sound
-      audioRef2.current = new Audio("/sounds/error.mp3");
-      audioRef2.current.loop = true;
-      audioRef2.current.volume = 0.8;
-      audioRef2.current.play().catch(() => {
-        // Autoplay might be blocked, ignore error
-      });
-
       if (displayText === glitchTexts[index]) {
         clearInterval(interval);
         setTimeout(() => {
@@ -93,13 +65,6 @@ const Level68Void = ({ onEscape }) => {
           setDisplayText("");
         }, 1500);
       }
-      return () => {
-        // Stop audio on unmount
-        if (audioRef2.current) {
-          audioRef2.current.pause();
-          audioRef2.current = null;
-        }
-      };
     }, 50);
 
     return () => clearInterval(interval);
