@@ -73,14 +73,19 @@ const PhaserGame = () => {
         setXY: { x: 400, y: 0 },
       });
 
+      // Make the star smaller visually and match its physics body to the new size
+      const STAR_SCALE = 0.35; // adjust this value to make the star bigger/smaller
+
       // Initially disable and hide the trick star so it doesn't appear right away
       trickStar.children.iterate((child) => {
+        // scale the sprite
+        child.setScale(STAR_SCALE);
         child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
 
-        // Make the trick star appear after 7 seconds (7000 ms)
+        // Make the trick star disappear after ~6.7 seconds (keeps original behavior)
         setTimeout(() => {
-          trickStar.children.iterate((child) => {
-            child.disableBody(true, true);
+          trickStar.children.iterate((c) => {
+            c.disableBody(true, true);
           });
         }, 6700);
       });
