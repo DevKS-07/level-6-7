@@ -21,7 +21,9 @@ const PhaserGame = () => {
       cursors,
       platforms,
       score = 0,
-      scoreText;
+      scoreText,
+      gameOver = false,
+      gameOverText;
 
     function preload() {
       this.load.image(
@@ -35,6 +37,10 @@ const PhaserGame = () => {
       this.load.image(
         "coin",
         "https://labs.phaser.io/assets/sprites/yellow_ball.png"
+      );
+      this.load.image(
+        "star",
+        "https://labs.phaser.io/assets/sprites/star.png"
       );
     }
 
@@ -60,8 +66,29 @@ const PhaserGame = () => {
         child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
       });
 
+      // Trick Star
+      const trickStar = this.physics.add.group({
+        key: "star",
+        repeat: 0,
+        setXY: { x: 400, y: 0 },
+      });
+
+      // Initially disable and hide the trick star so it doesn't appear right away
+      trickStar.children.iterate((child) => {
+        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+
+        // Make the trick star appear after 7 seconds (7000 ms)
+        setTimeout(() => {
+          trickStar.children.iterate((child) => {
+            child.disableBody(true, true);
+          });
+        }, 6700);
+      });
+
       this.physics.add.collider(coins, platforms);
+      this.physics.add.collider(trickStar, platforms);
       this.physics.add.overlap(player, coins, collectCoin, null, this);
+      this.physics.add.overlap(player, trickStar, collectTrickStar, null, this);
 
       scoreText = this.add.text(16, 16, "score: 0", {
         fontSize: "24px",
@@ -76,7 +103,38 @@ const PhaserGame = () => {
       scoreText.setText("score: " + score);
     }
 
+    function collectTrickStar(player, star) {
+      star.disableBody(true, true);
+      
+      // Set game over state
+      gameOver = true;
+      
+      // Stop the player and disable physics
+      player.setVelocity(0, 0);
+      player.body.allowGravity = false;
+      
+      // Display game over text
+      gameOverText = this.add.text(400, 300, 'GAME OVER', {
+        fontSize: '64px',
+        fill: '#ff0000'
+      });
+      gameOverText.setOrigin(0.5); // Center the text
+      
+      // Optional: Add final score
+      const finalScoreText = this.add.text(400, 350,
+        `Final Score: 67\nJust kidding, it's: ${score}`, {
+        fontSize: '32px',
+        fill: '#ffffff'
+      });
+      finalScoreText.setOrigin(0.5);
+      
+      // Stop all physics in the game
+      this.physics.pause();
+    }
+
     function update() {
+      if (gameOver) return; // Don't process updates if game is over
+
       if (cursors.left.isDown) player.setVelocityX(-160);
       else if (cursors.right.isDown) player.setVelocityX(160);
       else player.setVelocityX(0);
